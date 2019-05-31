@@ -68,3 +68,31 @@ end
 
 end
 
+def MAEDRanking(candidates, selectNum, options):
+    [K,Dist,options] = constructKernel(fea,[],options);
+    splitCandi = true(size(K,2),1);
+    smpRank = zeros(selectNum,1);
+
+    for sel = 1:selectNum
+        DValue = sum(K(:,splitCandi).^2,1)./(diag(K(splitCandi,splitCandi))'+options.ReguAlpha);
+        [~,idx] = max(DValue);
+        CandiIdx = find(splitCandi);
+        smpRank(sel) = CandiIdx(idx);
+        splitCandi(CandiIdx(idx)) = false;
+        K = K - (K(:,CandiIdx(idx))*K(CandiIdx(idx),:))/(K(CandiIdx(idx),CandiIdx(idx))+options.ReguAlpha);
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

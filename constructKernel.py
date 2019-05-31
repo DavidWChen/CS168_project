@@ -104,3 +104,9 @@ end
 if isempty(fea_b)
     K = max(K,K');
 end
+
+
+
+def constructKernel(fea_a,fea_b,options):
+
+    
