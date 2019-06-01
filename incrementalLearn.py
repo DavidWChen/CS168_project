@@ -49,6 +49,7 @@
 # end
 
 import numpy as np
+import MAEDRanking
 
 class XYArray:
     def __init__(self,X,Y):
@@ -70,7 +71,7 @@ def incrementalLearn(data, labels, options):
         candidates.Y = np.concatenate((model.Y, labels[i:i+batchSize]), axis=0)
 
 
-        rank = [x for x in range(25)] # MAEDRanking(candidates, modelSize, options)
+        rank = MAEDRanking.MAEDRanking(candidates, modelSize, {})
 
         model.X = [candidates.X[r] for r in rank]
         model.Y= [candidates.Y[r] for r in rank]
