@@ -49,10 +49,20 @@ def mainMNIST():
 	# np.savetxt('mndata.txt',model.X,fmt='%.2f')
 	# np.savetxt('mnlabel.txt',model.Y,fmt='%.2f')
 
+def mainEMNIST():
+	mndata = MNIST('./emnist_data')
+	mndata.select_emnist('digits')
+	images, labels = mndata.load_training()
+	images = np.array(images)
+
+	model = incrementalLearn.incrementalLearn(images, labels, {})
+	# np.savetxt('emndata25.txt',model.X,fmt='%.2f')
+	# np.savetxt('emnlabel25.txt',model.Y,fmt='%.2f')
 
 if __name__ =='__main__':
 	# mainSpiral()
-	mainMNIST()
+	# mainMNIST()
+	mainEMNIST()
 
 
 

@@ -9,8 +9,8 @@ class XYArray:
 
 
 def incrementalLearn(data, labels, options):
-    batchSize = 100# 500
-    modelSize = 25 #100
+    batchSize = 500# 100
+    modelSize = 100 #25
     nbTrainingSamples = len(data)
 
     model = XYArray(None,None)
