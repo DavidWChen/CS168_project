@@ -53,8 +53,8 @@ import MAEDRanking
 
 class XYArray:
     def __init__(self,X,Y):
-        self.X = np.array(X)
-        self.Y = np.array(Y)
+        self.X = X
+        self.Y = Y
 
 
 def incrementalLearn(data, labels, options):
@@ -62,19 +62,32 @@ def incrementalLearn(data, labels, options):
     modelSize = 25
     nbTrainingSamples = len(data)
 
-    model = XYArray([[0.0,0.0]],[[0]])
-    candidates = XYArray([[]],[])
+
+    model = XYArray(None,None)
+    candidates = XYArray(None,None)
 
 
     for i in range(0, nbTrainingSamples, batchSize):
-        candidates.X = np.concatenate((model.X, data[i:i+batchSize]), axis=0)
-        candidates.Y = np.concatenate((model.Y, labels[i:i+batchSize]), axis=0)
 
+        if model.X is None:
+            candidates.X = data[i:i+batchSize]
+        else:
+            candidates.X = np.concatenate((model.X, data[i:i+batchSize]), axis=0)
+
+        if model.Y is None:
+            candidates.Y = labels[i:i+batchSize]
+        else:
+            candidates.Y = np.concatenate((model.Y, labels[i:i+batchSize]), axis=0)
 
         rank = MAEDRanking.MAEDRanking(candidates, modelSize, {})
 
-        model.X = [candidates.X[r] for r in rank]
-        model.Y= [candidates.Y[r] for r in rank]
+        # print(np.transpose(rank+1))
+
+        model.X = np.array([candidates.X[r[0]] for r in rank])
+
+        # print(model.X[0][0])
+        model.Y = np.array([candidates.Y[r[0]] for r in rank])
+
 
     return model
 

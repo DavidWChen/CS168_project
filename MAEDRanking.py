@@ -70,42 +70,85 @@
 import constructKernel
 import numpy as np
 def MAEDRanking(candidates, selectNum, options):
+
+    ReguAlpha = 0.01
+    
     fea = candidates.X
 
-    K = constructKernel.constructKernel(fea,[],{});
+    K = constructKernel.constructKernel(fea,[],{})
+
+
+
     splitCandi = np.ones((K.shape[1],1), dtype=int)
-    smpRank = np.zeros((selectNum,1))
+    smpRank = np.zeros((selectNum,1), dtype=int)
+
+
 
 
     for x in range(selectNum):
-        print(splitCandi)
-        part1 = (np.sum(np.power(K[:,splitCandi],2),1))
 
-        part2 = (np.transpose(np.diag(K[splitCandi,splitCandi])))
 
-        DValue = np.divide(part1,part2 )
+        # print('blep')
+        splitCandiInd = np.array(indices(splitCandi, lambda x: x == 1))
+        
 
-        idx = np.amax(DValue, axis=1)
+        # print(splitCandiInd.shape)
+
+        part1 = np.sum(np.power(K[:,splitCandiInd],2),0)
+
+        part0 = K[splitCandiInd,:][:,splitCandiInd]
+        
+        part2 = (np.transpose(np.diag(part0))+ReguAlpha)
+
+
+        # print(part1.shape)
+        # print(part2.shape)
+        
+
+        DValue = np.divide(part1,part2)
+        
+        idx = np.argmax(DValue)
+        
+        
 
 
         CandiIdx = indices(splitCandi, lambda x: x != 0)
 
-        smpRank[x] = CandiIdx[idx]
+
+        smpRank[x] = CandiIdx[idx]##
+
 
         splitCandi[CandiIdx[idx]] = False
             
+        partZ=np.transpose([K[:,CandiIdx[idx]]])
+        partY=[K[CandiIdx[idx],:]]
+        # print(partZ)
+        # print(partY)
+        partA = np.matmul(partZ, partY)
+        # print(partA)
 
-        partA = np.divide(np.matmul(K[:,CandiIdx[idx]], K[CandiIdx[idx],:]))
+        partB = K[CandiIdx[idx],CandiIdx[idx]]+ReguAlpha
+        # print(partB)
+
+        partC = np.divide(partA, partB)
+
+        # print(partC)
             
 
 
+        # #imitate matlab right divide
+        # partB = np.linalg.pinv(K[CandiIdx[idx],CandiIdx[idx]])
 
-        partB = numpy.linalg.pinv(K[CandiIdx[idx],CandiIdx[idx]])
 
-
-        partC = np.matmul(partA, partB)
+        # partC = np.matmul(partA, partB)
 
         K = np.subtract(K, partC)
+        # print(K)
+
+
+
+
+
 
     return smpRank
 
